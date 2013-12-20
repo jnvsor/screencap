@@ -30,13 +30,13 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
 * **capture**  
   Video input size as described [in the avconv documentation](http://libav.org/avconv.html#Video-Options). Exact width/height: `1920x1080` or keyword: `hd1080`
 * **scale**  
-  Scale filter options as descriped [in the avconv documentation](http://libav.org/avconv.html#scale-1). When an option is set to -1 the aspect ratio is maintained (So the default of `w=-1:h=720` scales the video to 720 pixels high while maintaining aspect ratio)
+  Scale filter options as described [in the avconv documentation](http://libav.org/avconv.html#scale-1). When an option is set to -1 the aspect ratio is maintained (So the default of `w=-1:h=720` scales the video to 720 pixels high while maintaining aspect ratio)
   
-  Scaling the video down is not a CPU neccesity as a modern gaming system (Or steam machine) can record 1080p @ 30fps on a single core, however the file size at 720p is already 700Mb per minute and I personally like to keep my original footage.
+  Scaling the video down is not a CPU necessity as a modern gaming system (Or steam machine) can record 1080p @ 30fps on a single core, however the file size at 720p is already 700Mb per minute and I personally like to keep my original footage.
   
   Output size is automatically scaled to even width/height to keep encoders happy.
 * **preset**  
-  Which libx264 recording preset to use. These should be delivered with avconv and `lossless_ultrafast` has never steered me wrong. (Those of you with rediculous machines may want to up the thread count and lower the encoding speed to produce smaller file sizes at the cost of CPU time)
+  Which libx264 recording preset to use. These should be delivered with avconv and `lossless_ultrafast` has never steered me wrong. (Those of you with ridiculous machines may want to up the thread count and lower the encoding speed to produce smaller file sizes at the cost of CPU time)
 * **codec_v**  
   The video codec to use (Note that the presets delivered with avconv only work with libx264, so you may have to write your own and store it in `~/.avconv` if you plan on using a different encoder)
 * **audioinput**  
@@ -51,7 +51,7 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
 * **codec_a**  
   The audio codec to use
 * **map_a**  
-  By default avconv will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `audioinput` you can record from 2 different sources to 2 different tracks in the final file. These tracks can then be extracted for, or editted in other software.
+  By default avconv will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `audioinput` you can record from 2 different sources to 2 different tracks in the final file. These tracks can then be extracted for, or edited in other software.
 * **threads**  
   Number of threads to use to encode the video. Setting this to the maximum can slow games down if they are CPU hogs. Setting this to 1 could result in avconv not being able to keep up on slower machines.
 
@@ -62,7 +62,7 @@ Run the script with:
 Use sigint (Ctrl+C) to stop recording.
 
 ### Syntax
-    usage: `basename $0` [options] filename
+    usage: screencap [options] filename
 
     OPTIONS:
 
@@ -95,14 +95,14 @@ Use sigint (Ctrl+C) to stop recording.
         Number of threads to use
 
       --
-        Stop screencap recieving input and pass all following flags to avconv
+        Stop screencap receiving input and pass all following flags to avconv
 
 ### Other tips
 #### Editors
 Kdenlive development has ceased. If blender wasn't the best linux video editor before, it sure is now. In my opinion [blender](http://www.blender.org/) with [gimp](http://www.gimp.org/) and [audacity](http://audacity.sourceforge.net/) outperforms all other linux video editing software.
 
 #### Sound not synchronizing
-Pulseaudio has a wierd tendancy to mix up 48khz and 44.1khz, in such a way that avconv/ffmpeg flags can't even un-screw it up. To fix this problem, you can edit `/etc/pulse/daemon.conf` and change or uncomment the  `default-sample-rate` and/or `alternate-sample-rate` lines to get the sound back in sync.
+Pulseaudio has a weird tendency to mix up 48khz and 44.1khz, in such a way that avconv/ffmpeg flags can't even un-screw it up. To fix this problem, you can edit `/etc/pulse/daemon.conf` and change or uncomment the  `default-sample-rate` and/or `alternate-sample-rate` lines to get the sound back in sync.
 
 #### Compiling avconv
 Compiling a custom avconv if your package manager doesn't have a good one is not the hardest thing in the world. That said I'm not going to offer a massive instruction manual here, but instead the basic steps I use to get the git repo, configure it, and build it on my system.

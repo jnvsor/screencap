@@ -69,7 +69,7 @@ OPTIONS:
     Number of threads to use
 
   --
-    Stop screencap recieving input and pass all following flags to avconv
+    Stop screencap receiving input and pass all following flags to avconv
 
 EOF
 }
