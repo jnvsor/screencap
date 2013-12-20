@@ -1,0 +1,222 @@
+#!/bin/bash
+# Created by Jonathan Vollebregt
+
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# Defaults
+executable="avconv"
+
+fps="30"
+capture="hd1080"
+scale="w=-1:h=720"
+preset="lossless_ultrafast"
+codec_v="libx264"
+
+audioinput=(
+  -f pulse -name "screencap -> system audio" -i "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor"
+  -f pulse -name "screencap -> headset mic"  -i "alsa_input.pci-0000_00_1b.0.analog-stereo"
+)
+codec_a="libmp3lame"
+map_a=2
+
+threads=2
+
+
+usage(){
+cat << EOF
+usage: `basename $0` [options] filename
+
+OPTIONS:
+
+  -h, --help
+    Show this message
+
+  -r, --fps
+    Framerate in FPS
+
+  -i, --input
+    Input size in WxH or "window" to pick one with xwininfo
+
+  -o, --output
+    Output size in W:H (-1 wildcard to maintain aspect
+    ratio eg: -1:720) or default for no scaling
+
+  -p, --preset
+    avconv video preset to use
+
+  -f, --filters
+    Manual avconv video filters
+
+  --blind
+    Disable video recording
+
+  --mute
+    Disable audio recording
+
+  -t, --threads
+    Number of threads to use
+
+  --
+    Stop screencap recieving input and pass all following flags to avconv
+
+EOF
+}
+
+
+# Check for user input
+loop=true
+while $loop
+do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 1
+      ;;
+
+    --fps|-r)
+      fps="$2"
+      shift 2
+      ;;
+
+    --input|-i)
+      if [ "$2" == "window" ]; then
+        wininfo=`xwininfo`
+        width=$(echo "$wininfo" | grep "Width:" | awk '{printf $2}')
+        height=$(echo "$wininfo" | grep "Height:" | awk '{printf $2}')
+        offsetx=$(echo "$wininfo" | grep "Absolute upper-left X:" | awk '{printf $4}')
+        offsety=$(echo "$wininfo" | grep "Absolute upper-left Y:" | awk '{printf $4}')
+        offset="+${offsetx},${offsety}"
+        u_capture="${width}x${height}"
+      else
+        u_capture="$2"
+      fi
+      shift 2
+      ;;
+
+    --output|-o)
+      case "$2" in
+        default|scale|noscale|in) # any of these keywords will disable scaling
+          unset scale
+          ;;
+
+        *)
+          u_scale="$2"
+          ;;
+      esac
+      shift 2
+      ;;
+
+    --preset|-p)
+      preset="$2"
+      shift 2
+      ;;
+
+    --filters|-f)
+      filter_v="$2"
+      shift 2
+      ;;
+
+    --blind)
+      blind=true
+      shift
+      ;;
+
+    --mute)
+      mute=true
+      shift
+      ;;
+
+    --threads|-t)
+      threads="$2"
+      shift 2
+      ;;
+
+    --)
+      shift
+      ;;
+
+    *)
+      loop=false
+      ;;
+  esac
+done
+
+
+# Input post-processing
+if [ -n "$u_capture" ]; then
+  unset scale
+  capture=$u_capture
+fi
+
+if [ -n "$u_scale" ]; then
+  scale=$u_scale
+fi
+
+if [ -n "$scale" ]; then
+  scale="scale=$scale,"
+fi
+
+if [ -n "$filter_v" ]; then
+  filter_v="${filter_v%,},"
+fi
+
+if [ -n "$codec_v" ]; then
+  codec_v=( -codec:v "$codec_v" )
+fi
+
+map_v=1
+videoinput=( -f x11grab -r $fps -s $capture -i :0.0$offset )
+pre_v=( -pre:v "$preset" )
+
+if [ -n "$codec_a" ]; then
+  codec_a=( -codec:a "$codec_a" )
+fi
+
+if [ -n "$blind" ]; then
+  map_v=0
+  unset videoinput
+  unset codec_v
+  unset filter_v
+  unset pre_v
+fi
+
+if [ -n "$mute" ]; then
+  map_a=0
+  unset audioinput
+  unset codec_a
+fi
+
+maps=()
+for((i=0;i< $map_v + $map_a;i++))
+do
+  maps+=( -map $i )
+done
+
+# Last part rescales video to multiples of 2 because encoders hate odd numbers
+filter_v=( -filter:v "${filter_v}${scale}scale=w=trunc(in_w/2)*2:h=trunc(in_h/2)*2" )
+
+
+# Build final command
+set -x
+$executable \
+"${videoinput[@]}" \
+"${audioinput[@]}" \
+"${maps[@]}" \
+"${codec_v[@]}" \
+"${filter_v[@]}" \
+"${pre_v[@]}" \
+"${codec_a[@]}" \
+-threads $threads \
+-y $@
