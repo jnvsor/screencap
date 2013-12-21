@@ -16,7 +16,7 @@
 
 
 # Defaults
-executable="avconv"
+executable="$HOME/.opt/ffmpegbuild/bin/ffmpeg"
 
 fps="30"
 capture="hd1080"
@@ -178,7 +178,7 @@ if [ -n "$codec_v" ]; then
 fi
 
 map_v=1
-videoinput=( -f x11grab -r $fps -s $capture -i :0.0$offset )
+videoinput=( -f x11grab -framerate $fps -s $capture -i :0.0$offset )
 pre_v=( -pre:v "$preset" )
 
 if [ -n "$codec_a" ]; then
