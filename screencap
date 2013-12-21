@@ -174,7 +174,7 @@ if [ -n "$filter_v" ]; then
 fi
 
 if [ -n "$codec_v" ]; then
-  codec_v=( -codec:v "$codec_v" )
+  codec_v=( -codec:v "$codec_v" -r $fps )
 fi
 
 map_v=1
