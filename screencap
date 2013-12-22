@@ -174,7 +174,7 @@ if [ -n "$filter_v" ]; then
 fi
 
 if [ -n "$codec_v" ]; then
-  codec_v=( -codec:v "$codec_v" )
+  codec_v=( -c:v "$codec_v" )
 fi
 
 map_v=1
@@ -182,7 +182,7 @@ videoinput=( -f x11grab -framerate $fps -s $capture -i :0.0$offset )
 pre_v=( -pre:v "$preset" )
 
 if [ -n "$codec_a" ]; then
-  codec_a=( -codec:a "$codec_a" )
+  codec_a=( -c:a "$codec_a" )
 fi
 
 if [ -n "$blind" ]; then
