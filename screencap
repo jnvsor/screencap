@@ -17,12 +17,13 @@
 
 # Defaults
 executable="ffmpeg"
+threads=2
 
 fps="30"
 capture="hd1080"
 scale="w=-1:h=720"
-preset="lossless_ultrafast"
 codec_v="libx264"
+codec_v_options=( -preset "ultrafast" -qp 0 )
 
 audioinput=(
   -f pulse -name "screencap -> system audio" -i "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor"
@@ -30,8 +31,6 @@ audioinput=(
 )
 codec_a="libmp3lame"
 map_a=2
-
-threads=2
 
 
 usage(){
@@ -50,14 +49,11 @@ OPTIONS:
     Input size in WxH or "window" to pick one with xwininfo
 
   -o, --output
-    Output size in W:H (-1 wildcard to maintain aspect
-    ratio eg: -1:720) or default for no scaling
-
-  -p, --preset
-    avconv video preset to use
+    Output size.-1 is wildcard to maintain aspect ratio eg: \`w=-1:h=720\`
+    or \`default\` for no scaling
 
   -f, --filters
-    Manual avconv video filters
+    Manual video filters
 
   --blind
     Disable video recording
@@ -69,7 +65,7 @@ OPTIONS:
     Number of threads to use
 
   --
-    Stop screencap receiving input and pass all following flags to avconv
+    Stop screencap receiving input and pass all following parameters to command
 
 EOF
 }
@@ -115,11 +111,6 @@ do
           u_scale="$2"
           ;;
       esac
-      shift 2
-      ;;
-
-    --preset|-p)
-      preset="$2"
       shift 2
       ;;
 
@@ -173,24 +164,17 @@ if [ -n "$filter_v" ]; then
   filter_v="${filter_v%,},"
 fi
 
-if [ -n "$codec_v" ]; then
-  codec_v=( -c:v "$codec_v" )
-fi
-
 map_v=1
 videoinput=( -f x11grab -framerate $fps -s $capture -i :0.0$offset )
-pre_v=( -pre:v "$preset" )
-
-if [ -n "$codec_a" ]; then
-  codec_a=( -c:a "$codec_a" )
-fi
+codec_v=( -c:v "$codec_v" )
+codec_a=( -c:a "$codec_a" )
 
 if [ -n "$blind" ]; then
   map_v=0
   unset videoinput
   unset codec_v
+  unset codec_v_options
   unset filter_v
-  unset pre_v
 fi
 
 if [ -n "$mute" ]; then
@@ -215,9 +199,9 @@ $executable \
 "${videoinput[@]}" \
 "${audioinput[@]}" \
 "${maps[@]}" \
-"${codec_v[@]}" \
 "${filter_v[@]}" \
-"${pre_v[@]}" \
+"${codec_v[@]}" \
+"${codec_v_options[@]}" \
 "${codec_a[@]}" \
 -threads $threads \
 -y $@

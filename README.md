@@ -1,21 +1,21 @@
 # Screencap
-My screencap script allows me to capture video on linux faster than any normal programs can (Such as recordmydesktop, glc etc) by using pure avconv (ffmpeg) and x11grab.
+My screencap script allows me to capture video on linux faster than any normal programs can (Such as recordmydesktop, glc etc) by using pure FFmpeg and x11grab.
 
-* It can record and encode 1080p 30fps video realtime with a single CPU core and supports as many threads as avconv does (default 2)
-* It records audio from pulseaudio and allows you to save different audio sources to different audio tracks. You can then split off these audio tracks and effectively edit commentary after recording.
-* Pass `--` as an option and the following options will be sent to the end of the avconv command, for instance, in order to stream to twitch.
+* It can record and encode 1080p 30fps video realtime with a single CPU core and supports as many threads as you want (default 2)
+* It records audio from pulseaudio and allows you to save different audio sources to different audio tracks. This lets you edit microphone commentary separately from system audio.
+* Pass `--` as an option and the following options will be sent to the end of the FFmpeg command, for instance in order to stream to twitch.
 
 ### Installation
 #### Prerequisites
 * Pulseaudio sound server
-* avconv or ffmpeg compiled with:
+* FFmpeg compiled with:
   * enable-x11grab
   * enable-libpulse
   * enable-libmp3lame
   * enable-libx264
   * enable-filters
   * enable-pthreads  
-  There are many more useful options to compile it with (rtmp for streaming, vaapi & vdpau for performance etc) but these are required for the default settings. Check if your distribution's package has these options with `avconv -loglevel 99`
+  There are many more useful options to compile it with (rtmp for streaming, vaapi & vdpau for performance etc) but these are required for the default settings.
 * A compositing window manager wouldn't hurt
 
 #### Setup
@@ -24,21 +24,23 @@ Place the script somewhere in `$PATH` (I use `~/bin`)
 Open the script and scroll down to line 19 (Under "Defaults" comment) and set these values as wished
 
 * **executable**  
-  Path to the avconv/ffmpeg binary. Replace this with the full path to a custom compiled version if you have one.
+  Path to the FFmpeg binary. Replace this with the full path to a custom compiled version if you have one.
+* **threads**  
+  Number of threads to use to encode the video. Setting this to the maximum can slow games down if they are CPU hogs. Setting this to 1 could result in FFmpeg not being able to keep up on slower machines.
 * **fps**  
   Frames per second - self explanatory
 * **capture**  
-  Video input size as described [in the avconv documentation](http://libav.org/avconv.html#Video-Options). Exact width/height: `1920x1080` or keyword: `hd1080`
+  Video input size as described [in the FFmpeg documentation](http://ffmpeg.org/ffmpeg.html#Video-Options). Exact width/height: `1920x1080` or keyword: `hd1080`
 * **scale**  
-  Scale filter options as described [in the avconv documentation](http://libav.org/avconv.html#scale-1). When an option is set to -1 the aspect ratio is maintained (So the default of `w=-1:h=720` scales the video to 720 pixels high while maintaining aspect ratio)
+  Scale filter options as described [in the FFmpeg documentation](http://www.ffmpeg.org/ffmpeg-filters.html#Options). When an option is set to -1 the aspect ratio is maintained (So the default of `w=-1:h=720` scales the video to 720 pixels high while maintaining aspect ratio)
   
   Scaling the video down is not a CPU necessity as a modern gaming system (Or steam machine) can record 1080p @ 30fps on a single core, however the file size at 720p is already 700Mb per minute and I personally like to keep my original footage.
   
   Output size is automatically scaled to even width/height to keep encoders happy.
-* **preset**  
-  Which libx264 recording preset to use. These should be delivered with avconv and `lossless_ultrafast` has never steered me wrong. (Those of you with ridiculous machines may want to up the thread count and lower the encoding speed to produce smaller file sizes at the cost of CPU time)
 * **codec_v**  
-  The video codec to use (Note that the presets delivered with avconv only work with libx264, so you may have to write your own and store it in `~/.avconv` if you plan on using a different encoder)
+  The video codec to use
+* **codec_v_options**  
+  Options to pass to the encoder (Default is ultrafast lossless h.264, works great for screencasting)
 * **audioinput**  
   A bash array of options for audio inputs. Allow me to explain my own settings.
   * `-f pulse`
@@ -51,15 +53,13 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
 * **codec_a**  
   The audio codec to use
 * **map_a**  
-  By default avconv will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `audioinput` you can record from 2 different sources to 2 different tracks in the final file. These tracks can then be extracted for, or edited in other software.
-* **threads**  
-  Number of threads to use to encode the video. Setting this to the maximum can slow games down if they are CPU hogs. Setting this to 1 could result in avconv not being able to keep up on slower machines.
+  By default FFmpeg will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `audioinput` you can record from multiple sources to different tracks in the final file. These tracks can then be extracted, or edited in other software.
 
 Run the script with:
 
     screencap [options] filename
 
-Use sigint (Ctrl+C) to stop recording.
+Press `q` to stop recording.
 
 ### Syntax
     usage: screencap [options] filename
@@ -76,14 +76,11 @@ Use sigint (Ctrl+C) to stop recording.
         Input size in WxH or "window" to pick one with xwininfo
 
       -o, --output
-        Output size in W:H (-1 wildcard to maintain aspect
-        ratio eg: -1:720) or default for no scaling
-
-      -p, --preset
-        avconv video preset to use
+        Output size.-1 is wildcard to maintain aspect ratio eg: `w=-1:h=720`
+        or `default` for no scaling
 
       -f, --filters
-        Manual avconv video filters
+        Manual video filters
 
       --blind
         Disable video recording
@@ -95,20 +92,36 @@ Use sigint (Ctrl+C) to stop recording.
         Number of threads to use
 
       --
-        Stop screencap receiving input and pass all following flags to avconv
+        Stop screencap receiving input and pass all following parameters to command
 
 ### Other tips
 #### Editors
-Kdenlive development has ceased. If blender wasn't the best linux video editor before, it sure is now. In my opinion [blender](http://www.blender.org/) with [gimp](http://www.gimp.org/) and [audacity](http://audacity.sourceforge.net/) outperforms all other linux video editing software.
+In my opinion [blender](http://www.blender.org/) with [gimp](http://www.gimp.org/) and [audacity](http://audacity.sourceforge.net/) outperforms all other linux video editing software.
 
 #### Sound not synchronizing
-Pulseaudio has a weird tendency to mix up 48khz and 44.1khz, in such a way that avconv/ffmpeg flags can't even un-screw it up. To fix this problem, you can edit `/etc/pulse/daemon.conf` and change or uncomment the  `default-sample-rate` and/or `alternate-sample-rate` lines to get the sound back in sync.
+Pulseaudio has a weird tendency to mix up 48khz and 44.1khz, in such a way that FFmpeg flags can't even un-screw it up. To fix this problem, you can edit `/etc/pulse/daemon.conf` and change or uncomment the  `default-sample-rate` and/or `alternate-sample-rate` lines to get the sound back in sync.
 
-#### Compiling avconv
-Compiling a custom avconv if your package manager doesn't have a good one is not the hardest thing in the world. That said I'm not going to offer a massive instruction manual here, but instead the basic steps I use to get the git repo, configure it, and build it on my system.
+Avconv's x11grab device is broken and doesn't support the `-framerate` option - this means that any dropped frames will result in the output being shifted by a small amount of time and eventually desync from the sound. This is why this script no longer supports avconv.
 
-    git clone git://git.libav.org/libav.git
-    cd libav
-    ./configure --arch=amd64 --enable-pthreads --enable-librtmp --enable-libopenjpeg --enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-vaapi --enable-runtime-cpudetect --libdir=/usr/lib/x86_64-linux-gnu --enable-libvorbis --enable-zlib --enable-swscale --enable-libcdio --enable-bzlib --enable-libdc1394 --enable-frei0r --enable-gnutls --enable-libgsm --enable-libmp3lame --enable-libpulse --enable-vdpau --enable-libvpx --enable-gpl --enable-x11grab --enable-libx264 --shlibdir=/usr/lib/x86_64-linux-gnu --enable-shared --disable-static --prefix=$HOME/libavbuild
+
+#### Getting FFmpeg
+If you are on ubuntu or an ubuntu derivative, you can use a PPA to install FFmpeg.
+
+    apt-add-repository ppa:jon-severinsson/ffmpeg
+    apt-get update
+    apt-get install ffmpeg
+
+I am not affiliated with or responsible for any FFmpeg PPAs.
+
+#### Compiling FFmpeg
+Compiling a custom FFmpeg if your package manager doesn't have a good one is not the hardest thing in the world. That said I'm not going to offer a massive instruction manual here, but instead the basic steps I use to get the git repo, configure it, and build it on my system (debian sid).
+
+    git clone git@github.com:FFmpeg/FFmpeg.git
+    cd FFmpeg
+    ./configure --arch=amd64 --enable-pthreads --enable-libopencv --enable-librtmp --enable-libopenjpeg --enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-vaapi --enable-runtime-cpudetect --libdir=/usr/lib/x86_64-linux-gnu --enable-libvorbis --enable-zlib --enable-swscale --enable-libcdio --enable-bzlib --enable-libdc1394 --enable-frei0r --enable-gnutls --enable-libgsm --enable-libmp3lame --enable-libpulse --enable-vdpau --enable-libvpx --enable-gpl --enable-x11grab --enable-libx264 --shlibdir=/usr/lib/x86_64-linux-gnu --enable-shared --disable-static --prefix=$HOME/FFmpeg
     make
     make install
+
+The binary should now be found at `~/FFmpeg/bin/FFmpeg`
+
+You may need to run `make install` as root.
