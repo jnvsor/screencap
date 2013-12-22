@@ -16,7 +16,7 @@
 
 
 # Defaults
-executable="$HOME/.opt/ffmpegbuild/bin/ffmpeg"
+executable="ffmpeg"
 
 fps="30"
 capture="hd1080"
@@ -174,7 +174,7 @@ if [ -n "$filter_v" ]; then
 fi
 
 if [ -n "$codec_v" ]; then
-  codec_v=( -codec:v "$codec_v" -r $fps )
+  codec_v=( -codec:v "$codec_v" )
 fi
 
 map_v=1
