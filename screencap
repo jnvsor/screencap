@@ -169,6 +169,9 @@ videoinput=( -f x11grab -framerate $fps -s $capture -i :0.0$offset )
 codec_v=( -c:v "$codec_v" )
 codec_a=( -c:a "$codec_a" )
 
+# Last part rescales video to multiples of 2 because encoders hate odd numbers
+filter_v=( -filter:v "${filter_v}${scale}scale=w=trunc(in_w/2)*2:h=trunc(in_h/2)*2" )
+
 if [ -n "$blind" ]; then
   map_v=0
   unset videoinput
@@ -188,9 +191,6 @@ for((i=0;i< $map_v + $map_a;i++))
 do
   maps+=( -map $i )
 done
-
-# Last part rescales video to multiples of 2 because encoders hate odd numbers
-filter_v=( -filter:v "${filter_v}${scale}scale=w=trunc(in_w/2)*2:h=trunc(in_h/2)*2" )
 
 
 # Build final command
