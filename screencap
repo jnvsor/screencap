@@ -89,12 +89,12 @@ do
     --input|-i)
       if [ "$2" == "window" ]; then
         wininfo=`xwininfo`
-        width=$(echo "$wininfo" | grep "Width:" | awk '{printf $2}')
-        height=$(echo "$wininfo" | grep "Height:" | awk '{printf $2}')
-        offsetx=$(echo "$wininfo" | grep "Absolute upper-left X:" | awk '{printf $4}')
-        offsety=$(echo "$wininfo" | grep "Absolute upper-left Y:" | awk '{printf $4}')
-        offset="+${offsetx},${offsety}"
-        u_capture="${width}x${height}"
+        u_capture="$(echo "$wininfo" |
+            awk '/Width:/{w=$2} /Height:/{h=$2} END{printf("%dx%d", w, h)}')"
+        offset="$(echo "$wininfo" | awk '
+            /Absolute upper-left X:/{x=$4}
+            /Absolute upper-left Y:/{y=$4}
+            END{printf("+%d,%d", x, y)}')"
       else
         u_capture="$2"
       fi
