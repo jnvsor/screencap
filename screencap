@@ -72,8 +72,7 @@ EOF
 
 
 # Check for user input
-loop=true
-while $loop
+while :
 do
   case "$1" in
     --help|-h)
@@ -136,11 +135,11 @@ do
 
     --)
       shift
-      loop=false
+      break
       ;;
 
     *)
-      loop=false
+      break
       ;;
   esac
 done
