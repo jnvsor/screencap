@@ -34,7 +34,7 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
 * **scale**  
   Scale filter options as described [in the FFmpeg documentation](http://www.ffmpeg.org/ffmpeg-filters.html#Options). When an option is set to -1 the aspect ratio is maintained (So the default of `w=-1:h=720` scales the video to 720 pixels high while maintaining aspect ratio)
   
-  Scaling the video down is not a CPU necessity as a modern gaming system (Or steam machine) can record 1080p @ 30fps on a single core, however the file size at 720p is already 700Mb per minute and I personally like to keep my original footage.
+  Scaling the video down is not a CPU necessity as a modern gaming system (Or steam machine) can record 1080p @ 30fps on a single core, however the file size at 720p is already 230Mb per minute and I personally like to keep my original footage.
   
   Output size is automatically scaled to even width/height to keep encoders happy.
 * **codec_v**  
