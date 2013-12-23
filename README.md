@@ -47,6 +47,8 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
     Sets the audio input format to pulseaudio
   * `-name "name"`
     Sets the audio recorder name. This lets you change input volumes individually in mixers like `pavucontrol`.
+  * `-channel_layout "stereo"`
+    FFmpeg complains that it has to guess if I leave this out.
   * `-i "mumbo.jumbo"`
     The audio input device as shown in `pactl list short sources`
   You may add other options to this array as well (Such as changing the amount of audio channels per input)

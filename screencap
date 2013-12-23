@@ -23,11 +23,11 @@ fps="30"
 capture="hd1080"
 scale="w=-1:h=720"
 codec_v="libx264"
-codec_v_options=( -preset "ultrafast" -qp 0 )
+codec_v_options=( -pix_fmt yuv444p -preset "ultrafast" -qp 0 )
 
 audioinput=(
-  -f pulse -name "screencap -> system audio" -i "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor"
-  -f pulse -name "screencap -> headset mic"  -i "alsa_input.pci-0000_00_1b.0.analog-stereo"
+  -f pulse -name "screencap -> system audio" -channel_layout "stereo" -i "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor"
+  -f pulse -name "screencap -> headset mic"  -channel_layout "stereo" -i "alsa_input.pci-0000_00_1b.0.analog-stereo"
 )
 codec_a="libmp3lame"
 map_a=2
