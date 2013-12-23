@@ -1,3 +1,8 @@
+### Note to avconv users
+As of v1.1, this script **no longer supports avconv**. Avconv has several bugs including incomplete x11grab support, which results in stuttery out of sync video which no-one wants.
+
+[See below](#getting-ffmpeg) for instructions to get ffmpeg via PPA, and instructions on compiling manually.
+
 # Screencap
 My screencap script allows me to capture video on linux faster than any normal programs can (Such as recordmydesktop, glc etc) by using pure FFmpeg and x11grab.
 
@@ -106,7 +111,7 @@ Pulseaudio has a weird tendency to mix up 48khz and 44.1khz, in such a way that 
 Avconv's x11grab device is broken and doesn't support the `-framerate` option - this means that any dropped frames will result in the output being shifted by a small amount of time and eventually desync from the sound. This is why this script no longer supports avconv.
 
 
-#### Getting FFmpeg
+#### <a name="getting-ffmpeg"></a>Getting FFmpeg
 If you are on ubuntu or an ubuntu derivative, you can use a PPA to install FFmpeg.
 
     apt-add-repository ppa:jon-severinsson/ffmpeg
