@@ -203,4 +203,4 @@ $executable \
 "${codec_v_options[@]}" \
 "${codec_a[@]}" \
 -threads $threads \
--y $@
+-y "$@"
