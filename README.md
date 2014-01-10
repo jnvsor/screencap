@@ -86,9 +86,6 @@ Press `q` to stop recording.
         Output size.-1 is wildcard to maintain aspect ratio eg: `w=-1:h=720`
         or `default` for no scaling
 
-      -f, --filters
-        Manual video filters
-
       --blind
         Disable video recording
 

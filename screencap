@@ -52,9 +52,6 @@ OPTIONS:
     Output size.-1 is wildcard to maintain aspect ratio eg: \`w=-1:h=720\`
     or \`default\` for no scaling
 
-  -f, --filters
-    Manual video filters
-
   --blind
     Disable video recording
 
@@ -113,11 +110,6 @@ do
       shift 2
       ;;
 
-    --filters|-f)
-      filter_v="$2"
-      shift 2
-      ;;
-
     --blind)
       blind=true
       shift
@@ -159,14 +151,10 @@ if [ -n "$scale" ]; then
   scale="scale=$scale,"
 fi
 
-if [ -n "$filter_v" ]; then
-  filter_v="${filter_v%,},"
-fi
-
 map_v=1
 videoinput=( -f x11grab -framerate $fps -s $capture -i :0.0$offset )
 codec_v=( -c:v "$codec_v" )
-filter_v=( -filter:v "${filter_v}${scale}scale=w=trunc(in_w/2)*2:h=trunc(in_h/2)*2" )
+filter_v=( -filter:v "${scale}scale=w=trunc(in_w/2)*2:h=trunc(in_h/2)*2" )
 # Last part rescales video to multiples of 2 because encoders hate odd numbers
 
 codec_a=( -c:a "$codec_a" )
