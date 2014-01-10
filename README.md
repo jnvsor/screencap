@@ -32,20 +32,18 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
   Path to the FFmpeg binary. Replace this with the full path to a custom compiled version if you have one.
 * **threads**  
   Number of threads to use to encode the video. Setting this to the maximum can slow games down if they are CPU hogs. Setting this to 1 could result in FFmpeg not being able to keep up on slower machines.
-* **fps**  
+* **cap_fps**  
   Frames per second - self explanatory
-* **capture**  
+* **cap_size**  
   Video input size as described [in the FFmpeg documentation](http://ffmpeg.org/ffmpeg.html#Video-Options). Exact width/height: `1920x1080` or keyword: `hd1080`
-* **scale**  
+* **cap_scale**  
   Scale filter options as described [in the FFmpeg documentation](http://www.ffmpeg.org/ffmpeg-filters.html#Options). When an option is set to -1 the aspect ratio is maintained (So the default of `w=-1:h=720` scales the video to 720 pixels high while maintaining aspect ratio)
   
   Scaling the video down is not a CPU necessity as a modern gaming system (Or steam machine) can record 1080p @ 30fps on a single core, however the file size at 720p is up to 700Mb per minute and I personally like to keep my original footage.
   
   Output size is automatically scaled to even width/height to keep encoders happy.
-* **codec_v**  
-  The video codec to use
-* **codec_v_options**  
-  Options to pass to the encoder (Default is ultrafast lossless h.264, works great for screencasting)
+* **cap_out**  
+  The video codec (and options) to use. Default is ultrafast lossless h.264, works great for screencasting
 * **audioinput**  
   A bash array of options for audio inputs. Allow me to explain my own settings.
   * `-f pulse`
@@ -57,9 +55,9 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
   * `-i "mumbo.jumbo"`
     The audio input device as shown in `pactl list short sources`
   You may add other options to this array as well (Such as changing the amount of audio channels per input)
-* **codec_a**  
-  The audio codec to use
-* **map_a**  
+* **audio_out**  
+  The audio codec (And options) to use
+* **audio_map**  
   By default FFmpeg will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `audioinput` you can record from multiple sources to different tracks in the final file. These tracks can then be extracted, or edited in other software.
 
 Run the script with:
