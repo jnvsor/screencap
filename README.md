@@ -50,7 +50,7 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
   Output codecs for extra video sources. You can also filter the optional video sources. Note that the identifier reads `v:1` now, indicating the second video track - not the screen capture input.
 * **video_map**  
   By default FFmpeg will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `video_in` you can record from multiple sources to different tracks in the final file. These tracks can then be extracted, or edited in other software.
-* **audioinput**  
+* **audio_in**  
   A bash array of options for audio inputs. Allow me to explain my own settings.
   * `-f pulse`
     Sets the audio input format to pulseaudio
