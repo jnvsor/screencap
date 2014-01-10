@@ -43,7 +43,13 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
   
   Output size is automatically scaled to even width/height to keep encoders happy.
 * **cap_out**  
-  The video codec (and options) to use. Default is ultrafast lossless h.264, works great for screencasting
+  The screen capture codec (and options) to use. Default is ultrafast lossless h.264, works great for screencasting
+* **video_in**  
+  Extra video sources to record in the file (IE webcam)
+* **video_out**  
+  Output codecs for extra video sources. You can also filter the optional video sources. Note that the identifier reads `v:1` now, indicating the second video track - not the screen capture input.
+* **video_map**  
+  By default FFmpeg will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `video_in` you can record from multiple sources to different tracks in the final file. These tracks can then be extracted, or edited in other software.
 * **audioinput**  
   A bash array of options for audio inputs. Allow me to explain my own settings.
   * `-f pulse`
@@ -58,7 +64,7 @@ Open the script and scroll down to line 19 (Under "Defaults" comment) and set th
 * **audio_out**  
   The audio codec (And options) to use
 * **audio_map**  
-  By default FFmpeg will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `audioinput` you can record from multiple sources to different tracks in the final file. These tracks can then be extracted, or edited in other software.
+  See `video_map`
 
 Run the script with:
 
