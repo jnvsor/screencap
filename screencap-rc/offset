@@ -1,0 +1,6 @@
+# Base this config file on the default
+source "$config_folder/default"
+
+# Record a 720p size video in the center of a 1080 screen
+cap_size="hd720"
+cap_offset="320,180"

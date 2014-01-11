@@ -11,3 +11,7 @@ video_filter="[1]scale=w=-1:h=200[mid];[cap][mid]overlay=x=main_w-overlay_w-10:y
 # (something you might use for streaming to twitch for example) we don't want
 # the original webcam stream to show up in the output file, so we unset the map
 unset video_map
+
+# Since we're not rendering the stream there's no point to having the video
+# codecs clogging up our command line either
+unset video_out
