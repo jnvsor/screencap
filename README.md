@@ -1,6 +1,4 @@
 # Screencap
-My screencap script allows me to capture video on linux faster than any normal programs can (Such as recordmydesktop, glc etc) by using pure FFmpeg and x11grab.
-
 * It can record and encode 1080p 30fps video realtime with a single CPU core and supports as many threads as you want (default 2)
 * It records audio from pulseaudio and allows you to save different audio sources to different audio tracks. This lets you edit microphone commentary separately from system audio.
 * With multiple config files you can have drastically different recording settings for different purposes.
@@ -9,25 +7,18 @@ My screencap script allows me to capture video on linux faster than any normal p
 
 ### Installation
 #### Prerequisites
-* FFmpeg
+* FFmpeg  
   **Note:** FFmpeg must be compiled with certain options (Support for x11grab, libmp3lame, libx264, filters, pthreads, pulseaudio, potentially more depending on your config) so if yours doesn't work, [try compiling one yourself](#compiling-ffmpeg).
 * Pulseaudio sound server
 * A compositing window manager wouldn't hurt
 
 #### Setup
-Place the script somewhere in `$PATH` (I use `~/bin`)
-
-Place the `screencap-rc` folder wherever you want it (I use `~/.sc-rc`)
-
-Open the script, scroll down to line 17 and set `config_folder` to the location of your `screencap-rc` folder (In my case that would be `config_folder="$HOME/.sr-rc"`. Don't leave a trailing slash.
-
-Run the script with:
-
-    screencap [preset] [options] filename
-
-Press `q` to stop recording.
-
-Create your own config files. The files in `screencap-rc` are heavily commented to show a few use cases.
+1. Place the script somewhere in `$PATH` (I use `~/bin`)
+2. Place the `screencap-rc` folder wherever you want it (I use `~/.sc-rc`)
+3. Open the script, scroll down to line 17 and set `config_folder` to the location of your `screencap-rc` folder (In my case that would be `config_folder="$HOME/.sr-rc"`. Don't leave a trailing slash.
+4. Run the script with: `screencap [preset] [options] filename`
+5. Press `q` to stop recording.
+6. Create your own config files. The files in `screencap-rc` are heavily commented to show a few use cases.
 
 ### Syntax
     usage: screencap [preset] [options] filename
@@ -87,7 +78,7 @@ I am not affiliated with or responsible for any FFmpeg PPAs.
 #### <a name="compiling-ffmpeg"></a>Compiling FFmpeg
 Compiling a custom FFmpeg if your package manager doesn't have a good one is not the hardest thing in the world. That said I'm not going to offer a massive instruction manual here, but instead the basic steps I use to get the git repo, configure it, and build it on my system (debian sid).
 
-    git clone git@github.com:FFmpeg/FFmpeg.git
+    git clone https://github.com/FFmpeg/FFmpeg.git
     cd FFmpeg
     ./configure --arch=amd64 --enable-pthreads --enable-libopencv --enable-librtmp --enable-libopenjpeg --enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-vaapi --enable-runtime-cpudetect --enable-libvorbis --enable-zlib --enable-swscale --enable-libcdio --enable-bzlib --enable-libdc1394 --enable-frei0r --enable-gnutls --enable-libgsm --enable-libmp3lame --enable-libpulse --enable-vdpau --enable-libvpx --enable-gpl --enable-x11grab --enable-libx264
     make -j4
