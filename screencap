@@ -110,7 +110,7 @@ do
           ;;
 
         *)
-          u_cap_scale="$2"
+          u_scale="$2"
           ;;
       esac
       shift 2
@@ -149,27 +149,29 @@ if [ -n "$u_cap_size" ]; then
   cap_size=$u_cap_size
 fi
 
-if [ -n "$u_cap_scale" ]; then
-  cap_scale=$u_cap_scale
-fi
-
 if [ -n "$cap_scale" ]; then
-  cap_scale="scale=$cap_scale,"
+  cap_scale="[cap]scale=${cap_scale}[cap];"
 fi
 
-cap_map=( -map 0 )
+if [ -n "$u_scale" ]; then
+  unset cap_scale
+  u_scale="[cap]scale=${u_scale}[cap];"
+fi
+
+cap_map=( -map "[cap]" )
 cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -i :0.0$cap_offset )
-cap_filter=( -filter:v:0 "${cap_scale}${rounding_filter}" )
-# Last part rescales video to multiples of 2 because encoders hate odd numbers
+
+filter=( -filter_complex "[0]null[cap];${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap]" )
+
 
 if [ -n "$blind" ]; then
   unset cap_map
   unset cap_in
-  unset cap_filter
   unset cap_out
   unset video_map
   unset video_in
   unset video_out
+  unset filter
   audio_offset=0
 fi
 
@@ -194,8 +196,8 @@ $executable \
 "${cap_in[@]}" \
 "${video_in[@]}" \
 "${audio_in[@]}" \
+"${filter[@]}" \
 "${maps[@]}" \
-"${cap_filter[@]}" \
 "${cap_out[@]}" \
 "${video_out[@]}" \
 "${audio_out[@]}" \
