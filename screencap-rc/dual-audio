@@ -1,0 +1,13 @@
+# Base this config file on the default
+source "$config_folder/default"
+
+# Have 2 audio inputs, mapped to specific pulseaudio inputs with the
+# -i flag where the inputs are found with `pactl list short sources`
+# http://www.ffmpeg.org/ffmpeg-devices.html#pulse-1
+audio_in=(
+  -f pulse -name "screencap -> system audio" -channel_layout "stereo" -i "alsa_output.pci-0000_00_1b.0.analog-stereo.monitor"
+  -f pulse -name "screencap -> headset mic"  -channel_layout "stereo" -i "alsa_input.pci-0000_00_1b.0.analog-stereo"
+)
+
+# There are now 2 output streams
+audio_count=2

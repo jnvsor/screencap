@@ -1,0 +1,45 @@
+# The path to the executable.
+# Replace this with the full path to a custom compiled version if you have one.
+executable="ffmpeg"
+
+# Number of threads to use to encode the video. Setting this to the maximum can
+# slow games down if they are CPU hogs. Setting this to 1 could result in FFmpeg
+# not being able to keep up on slower machines.
+threads=2
+
+# Frames per second - self explanatory
+cap_fps="30"
+
+# Video input size as described in the FFmpeg documentation
+# Exact width/height: `1920x1080` or keyword: `hd1080`
+# http://ffmpeg.org/ffmpeg.html#Video-Options
+cap_size="hd1080"
+
+# Scale filter options as described in the FFmpeg documentation
+# This default scales the video to 720 pixels high while maintaining aspect ratio
+# http://www.ffmpeg.org/ffmpeg-filters.html#Options
+cap_scale="w=-1:h=720"
+
+# The screen capture encoder (and options) to use
+# Default is ultrafast lossless libx264: works great for screencasting
+# http://ffmpeg.org/ffmpeg-codecs.html#libx264
+cap_out=( -c:v:cap "libx264" -pix_fmt yuv444p -preset "ultrafast" -qp 0 )
+
+# The audio input as described in the FFmpeg documentation
+# Default is the default pulseaudio input device
+# http://www.ffmpeg.org/ffmpeg-devices.html#pulse-1
+audio_in=(
+  -f pulse -name "screencap -> system audio" -channel_layout "stereo" -i "default"
+)
+
+# Audio encoder (And options) to use
+# Here I set all audio streams to encode mp3
+# http://ffmpeg.org/ffmpeg-codecs.html#libmp3lame-1
+audio_out=( -c:a "libmp3lame" )
+
+# We have one audio stream in $audio_in
+audio_count=1
+
+# And it's at an offset of 1 
+# (Offsets start at 0 but the screen capture is the 0 stream)
+audio_offset=1

@@ -8,6 +8,8 @@ My screencap script allows me to capture video on linux faster than any normal p
 
 * It can record and encode 1080p 30fps video realtime with a single CPU core and supports as many threads as you want (default 2)
 * It records audio from pulseaudio and allows you to save different audio sources to different audio tracks. This lets you edit microphone commentary separately from system audio.
+* With multiple config files you can have drastically different recording settings for different purposes.
+* Complex filters allow anything from rescaling to overlaying webcam in realtime.
 * Pass `--` as an option and the following options will be sent to the end of the FFmpeg command, for instance in order to stream to twitch.
 
 ### Installation
@@ -26,54 +28,26 @@ My screencap script allows me to capture video on linux faster than any normal p
 #### Setup
 Place the script somewhere in `$PATH` (I use `~/bin`)
 
-Open the script and scroll down to line 19 (Under "Defaults" comment) and set these values as wished
+Place the `screencap-rc` folder wherever you want it (I use `~/.sc-rc`)
 
-* **executable**  
-  Path to the FFmpeg binary. Replace this with the full path to a custom compiled version if you have one.
-* **threads**  
-  Number of threads to use to encode the video. Setting this to the maximum can slow games down if they are CPU hogs. Setting this to 1 could result in FFmpeg not being able to keep up on slower machines.
-* **cap_fps**  
-  Frames per second - self explanatory
-* **cap_size**  
-  Video input size as described [in the FFmpeg documentation](http://ffmpeg.org/ffmpeg.html#Video-Options). Exact width/height: `1920x1080` or keyword: `hd1080`
-* **cap_scale**  
-  Scale filter options as described [in the FFmpeg documentation](http://www.ffmpeg.org/ffmpeg-filters.html#Options). When an option is set to -1 the aspect ratio is maintained (So the default of `w=-1:h=720` scales the video to 720 pixels high while maintaining aspect ratio)
-  
-  Scaling the video down is not a CPU necessity as a modern gaming system (Or steam machine) can record 1080p @ 30fps on a single core, however the file size at 720p is up to 700Mb per minute and I personally like to keep my original footage.
-  
-  Output size is automatically scaled to even width/height to keep encoders happy.
-* **cap_out**  
-  The screen capture codec (and options) to use. Default is ultrafast lossless h.264, works great for screencasting
-* **video_in**  
-  Extra video sources to record in the file (IE webcam)
-* **video_out**  
-  Output codecs for extra video sources. You can also filter the optional video sources. Note that the identifier reads `v:1` now, indicating the second video track - not the screen capture input.
-* **video_map**  
-  By default FFmpeg will only map 1 video and 1 audio stream to an avi file. By setting this to the number of inputs in `video_in` you can record from multiple sources to different tracks in the final file. These tracks can then be extracted, or edited in other software.
-* **audio_in**  
-  A bash array of options for audio inputs. Allow me to explain my own settings.
-  * `-f pulse`
-    Sets the audio input format to pulseaudio
-  * `-name "name"`
-    Sets the audio recorder name. This lets you change input volumes individually in mixers like `pavucontrol`.
-  * `-channel_layout "stereo"`
-    FFmpeg complains that it has to guess if I leave this out.
-  * `-i "mumbo.jumbo"`
-    The audio input device as shown in `pactl list short sources`
-  You may add other options to this array as well (Such as changing the amount of audio channels per input)
-* **audio_out**  
-  The audio codec (And options) to use
-* **audio_map**  
-  See `video_map`
+Open the script, scroll down to line 17 and set `config_folder` to the location of your `screencap-rc` folder (In my case that would be `config_folder="$HOME/.sr-rc"`. Don't leave a trailing slash.
 
 Run the script with:
 
-    screencap [options] filename
+    screencap [preset] [options] filename
 
 Press `q` to stop recording.
 
+Create your own config files. The files in `screencap-rc` are heavily commented to show a few use cases.
+
 ### Syntax
-    usage: screencap [options] filename
+    usage: screencap [preset] [options] filename
+
+    PRESET:
+      Name of a file in the folder:
+        screencap-rc
+      or absolute path to equivalent file. Default is:
+        screencap-rc/default
 
     OPTIONS:
 

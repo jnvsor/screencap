@@ -1,0 +1,13 @@
+# Base this config file on the webcam config file
+source "$config_folder/webcam"
+
+# Add a video filter to scale input 1 to 200px high, then overlay it onto
+# the screen capture at the bottom right with a 10px margin
+# Note how the capture stream is [cap] for both input and output, not [0]
+# http://www.ffmpeg.org/ffmpeg-filters.html#overlay-1
+video_filter="[1]scale=w=-1:h=200[mid];[cap][mid]overlay=x=main_w-overlay_w-10:y=main_h-overlay_h-10[cap];"
+
+# Since we're overlaying our webcam onto the screencap stream in realtime
+# (something you might use for streaming to twitch for example) we don't want
+# the original webcam stream to show up in the output file, so we unset the map
+unset video_map

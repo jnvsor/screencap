@@ -1,0 +1,18 @@
+# Base this config file on the default
+source "$config_folder/default"
+
+# Add a video4linux2 input
+# http://www.ffmpeg.org/ffmpeg-devices.html#video4linux2_002c-v4l2
+video_in=( -f v4l2 -i /dev/video0 )
+
+# Set video output codec
+# http://ffmpeg.org/ffmpeg-codecs.html#libx264
+video_out=( -c:v libx264 -pix_fmt yuv444p -preset "ultrafast" -qp 0 )
+
+# Which video streams to map
+# In some instances you may want to use an input, but not create a separate
+# output track for that input. Example: webcam-overlay
+video_map=( 1 )
+
+# Now that we have a second video track, the audio offset is 2
+audio_offset=2
