@@ -1,8 +1,3 @@
-### Note to avconv users
-As of v1.1, this script **no longer supports avconv**. Avconv has several bugs including incomplete x11grab support, which results in stuttery out of sync video which no-one wants.
-
-[See below](#getting-ffmpeg) for instructions to get ffmpeg via PPA, and instructions on compiling manually.
-
 # Screencap
 My screencap script allows me to capture video on linux faster than any normal programs can (Such as recordmydesktop, glc etc) by using pure FFmpeg and x11grab.
 
@@ -14,15 +9,9 @@ My screencap script allows me to capture video on linux faster than any normal p
 
 ### Installation
 #### Prerequisites
+* FFmpeg
+  **Note:** FFmpeg must be compiled with certain options (Support for x11grab, libmp3lame, libx264, filters, pthreads, pulseaudio, potentially more depending on your config) so if yours doesn't work, [try compiling one yourself](#compiling-ffmpeg).
 * Pulseaudio sound server
-* FFmpeg compiled with:
-  * enable-x11grab
-  * enable-libpulse
-  * enable-libmp3lame
-  * enable-libx264
-  * enable-filters
-  * enable-pthreads  
-  There are many more useful options to compile it with (rtmp for streaming, vaapi & vdpau for performance etc) but these are required for the default settings.
 * A compositing window manager wouldn't hurt
 
 #### Setup
@@ -86,7 +75,7 @@ Pulseaudio has a weird tendency to mix up 48khz and 44.1khz, in such a way that 
 Avconv's x11grab device is broken and doesn't support the `-framerate` option - this means that any dropped frames will result in the output being shifted by a small amount of time and eventually desync from the sound. This is why this script no longer supports avconv.
 
 
-#### <a name="getting-ffmpeg"></a>Getting FFmpeg
+#### Getting FFmpeg
 If you are on ubuntu or an ubuntu derivative, you can use a PPA to install FFmpeg.
 
     apt-add-repository ppa:jon-severinsson/ffmpeg
@@ -95,15 +84,12 @@ If you are on ubuntu or an ubuntu derivative, you can use a PPA to install FFmpe
 
 I am not affiliated with or responsible for any FFmpeg PPAs.
 
-#### Compiling FFmpeg
+#### <a name="compiling-ffmpeg"></a>Compiling FFmpeg
 Compiling a custom FFmpeg if your package manager doesn't have a good one is not the hardest thing in the world. That said I'm not going to offer a massive instruction manual here, but instead the basic steps I use to get the git repo, configure it, and build it on my system (debian sid).
 
     git clone git@github.com:FFmpeg/FFmpeg.git
     cd FFmpeg
-    ./configure --arch=amd64 --enable-pthreads --enable-libopencv --enable-librtmp --enable-libopenjpeg --enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-vaapi --enable-runtime-cpudetect --libdir=/usr/lib/x86_64-linux-gnu --enable-libvorbis --enable-zlib --enable-swscale --enable-libcdio --enable-bzlib --enable-libdc1394 --enable-frei0r --enable-gnutls --enable-libgsm --enable-libmp3lame --enable-libpulse --enable-vdpau --enable-libvpx --enable-gpl --enable-x11grab --enable-libx264 --shlibdir=/usr/lib/x86_64-linux-gnu --enable-shared --disable-static --prefix=$HOME/FFmpeg
-    make
-    make install
+    ./configure --arch=amd64 --enable-pthreads --enable-libopencv --enable-librtmp --enable-libopenjpeg --enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-vaapi --enable-runtime-cpudetect --enable-libvorbis --enable-zlib --enable-swscale --enable-libcdio --enable-bzlib --enable-libdc1394 --enable-frei0r --enable-gnutls --enable-libgsm --enable-libmp3lame --enable-libpulse --enable-vdpau --enable-libvpx --enable-gpl --enable-x11grab --enable-libx264
+    make -j4
 
-The binary should now be found at `~/FFmpeg/bin/FFmpeg`
-
-You may need to run `make install` as root.
+The binary can now be found at `FFmpeg/ffmpeg`
