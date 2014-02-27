@@ -138,12 +138,17 @@ do
 done
 
 
-# Input post-processing
+# Disable scaling with runtime size options
 if [ -n "$u_cap_size" ]; then
   unset cap_scale
   cap_size=$u_cap_size
 fi
 
+# Capture settings
+cap_name=( "cap" )
+cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -i ${cap_device}${cap_offset} )
+
+# Video filter construction
 if [ -n "$cap_scale" ]; then
   cap_scale="[cap]scale=${cap_scale}[cap];"
 fi
@@ -153,48 +158,76 @@ if [ -n "$u_scale" ]; then
   u_scale="[cap]scale=${u_scale}[cap];"
 fi
 
-cap_map=( -map "[cap]" )
-cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -i ${cap_device}${cap_offset} )
+if [ -n "$video_filter" ]; then
+  video_filter="${video_filter%%;};"
+fi
 
-video_filter=( -filter_complex "[0]null[cap];${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap]" )
+video_filter="${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap];"
 
-audio_filter=( -filter_complex "${audio_filter}" )
-
+# Runtime blind/mute
 if [ -n "$blind" ]; then
   unset cap_map
+  unset cap_name
   unset cap_in
   unset cap_out
   unset video_map
+  unset video_name
   unset video_in
   unset video_out
   unset video_filter
-  audio_offset=0
 fi
 
 if [ -n "$mute" ]; then
-  audio_count=0
-  unset audio_filter
+  unset audio_map
+  unset audio_name
   unset audio_in
   unset audio_out
+  unset audio_filter
 fi
 
-maps=( "${cap_map[@]}" )
-for i in ${video_map[@]}; do
-  maps+=( -map $i )
-done
-for i in $(seq 0 $(($audio_count - 1))); do
-  maps+=( -map $(($i + $audio_offset)) )
+# Fill maps when empty
+if [ ! $cap_map ]; then
+  cap_map=( "${cap_name[@]}" )
+fi
+if [ ! $video_map ]; then
+  video_map=( "${video_name[@]}" )
+fi
+if [ ! $audio_map ]; then
+  audio_map=( "${audio_name[@]}" )
+fi
+
+# Build maps
+maps=( )
+for i in "${cap_map[@]}" "${video_map[@]}" "${audio_map[@]}"; do
+  if [ "$i" == "null" ]; then
+    continue
+  fi
+  maps+=( -map "[$i]" )
 done
 
+# Build null filters
+name_filter=""
+count=0
+for i in "${cap_name[@]}" "${video_name[@]}"; do
+  name_filter="${name_filter}[$count]null[$i];"
+  let count++
+done
+for i in "${audio_name[@]}"; do
+  name_filter="${name_filter}[$count]anull[$i];"
+  let count++
+done
+
+# Build final filter graph
+filter="${name_filter}${video_filter}${audio_filter}"
+filter=( -filter_complex "${filter%;}" )
 
 # Build final command
 set -x
 $executable \
 "${cap_in[@]}" \
 "${video_in[@]}" \
-"${video_filter[@]}" \
 "${audio_in[@]}" \
-"${audio_filter[@]}" \
+"${filter[@]}" \
 "${maps[@]}" \
 "${video_out[@]}" \
 "${cap_out[@]}" \

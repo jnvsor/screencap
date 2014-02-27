@@ -1,43 +1,17 @@
 # Base this config file on the webcam config file
 source "$config_folder/webcam"
 
-# Add a video filter to scale input 1 to 200px high, then overlay it onto
+# Add a video filter to scale webcam to 200px high, then overlay it onto
 # the screen capture at the bottom right with a 10px margin
-# Note how the capture stream is [cap] for both input and output, not [0]
 # http://www.ffmpeg.org/ffmpeg-filters.html#overlay-1
-video_filter="[1]scale=w=-1:h=200[mid];[cap][mid]overlay=x=main_w-overlay_w-10:y=main_h-overlay_h-10[cap];"
+video_filter+="[webcam]scale=w=-1:h=200[mid];[cap][mid]overlay=x=main_w-overlay_w-10:y=main_h-overlay_h-10[cap];"
 
 # Since we're overlaying our webcam onto the screencap stream in realtime
 # (something you might use for streaming to twitch for example) we don't want
-# the original webcam stream to show up in the output file, so we unset the map
-unset video_map
+# the original webcam stream to show up in the output file, so we turn off the
+# mapping completely with the special value "null"
+video_map="null"
 
 # Since we're not rendering the stream there's no point to having the video
 # codecs clogging up our command line either
 unset video_out
-
-
-# NOTE:
-# FFmpeg bug: https://trac.ffmpeg.org/ticket/3192
-# Causes stuttering when webcam is overlayed onto x11grab
-# Workaround below:
-
-# Add second x11grab input [2]
-video_in=( -f v4l2 -framerate 30 -i /dev/video0 -f x11grab -framerate 30 -s hd1080 -i :0.0 )
-
-# Send the original to a nullsink, replace it with stream [2], continue as above
-video_filter="[cap]nullsink;[2]null[cap];[1]scale=w=-1:h=200[mid];[cap][mid]overlay=x=main_w-overlay_w-10:y=main_h-overlay_h-10[cap];"
-
-# Since we've added another x11grab input, move audio offset
-audio_offset=3
-
-# Remove builtin scale to aid performance
-unset cap_scale
-
-# This workaround isn't perfect - it's less performant than if the bug didn't
-# exist, and the framerate, capture size etc are hard coded.
-# That said, on a single thread it goes from 17fps to 30fps, and on 2 threads it
-# holds 30fps with ease
-
-# This section will be removed when the FFmpeg bug is fixed
-# https://github.com/jnvsor/screencap/issues/2

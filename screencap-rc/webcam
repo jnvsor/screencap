@@ -12,7 +12,32 @@ video_out=( -c:v libx264 -pix_fmt yuv444p -preset "ultrafast" -qp 0 )
 # Which video streams to map
 # In some instances you may want to use an input, but not create a separate
 # output track for that input. Example: webcam-overlay
-video_map=( 1 )
+video_name=( webcam )
 
-# Now that we have a second video track, the audio offset is 2
-audio_offset=2
+
+
+# NOTE:
+# FFmpeg bug: https://trac.ffmpeg.org/ticket/3192
+# Causes stuttering when webcam is filtered along with x11grab
+# Workaround below (Don't worry if it's daunting, this whole section will be
+# removed once the FFmpeg bug is fixed)
+
+# Add second x11grab input
+video_in+=( -f x11grab -framerate 30 -s hd1080 -i :0.0 )
+video_name+=( secondgrab )
+
+# Send original to nullsink, replace with secondgrab
+video_filter="[cap]nullsink;[secondgrab]null[cap];"
+
+# We have to manually reapply any scales we wanted
+video_filter+="[cap]scale=w=-1:h=720[cap];"
+
+# Since we're piping secondgrab to cap, we shouldn't map that stream
+video_map=( webcam )
+
+# Remove builtin scale to aid performance
+unset cap_scale
+
+# This workaround isn't perfect - it's less performant than if the bug didn't
+# exist, and the framerate, capture size etc are hard coded.
+# That said, the workaround makes it go from 17fps to 30fps

@@ -9,5 +9,5 @@ audio_in=(
   -f pulse -name "screencap -> headset mic"  -channel_layout "stereo" -i "alsa_input.pci-0000_00_1b.0.analog-stereo"
 )
 
-# There are now 2 output streams
-audio_count=2
+# Name both inputs
+audio_name=( system mic )

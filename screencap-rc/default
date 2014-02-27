@@ -39,14 +39,10 @@ audio_in=(
   -f pulse -name "screencap -> system audio" -channel_layout "stereo" -i "default"
 )
 
+# Give the audio input a name
+audio_name=( audio )
+
 # Audio encoder (And options) to use
 # Here I set all audio streams to encode mp3
 # http://ffmpeg.org/ffmpeg-codecs.html#libmp3lame-1
 audio_out=( -c:a "libmp3lame" )
-
-# We have one audio stream in $audio_in
-audio_count=1
-
-# And it's at an offset of 1 
-# (Offsets start at 0 but the screen capture is the 0 stream)
-audio_offset=1

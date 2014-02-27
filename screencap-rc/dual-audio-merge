@@ -1,0 +1,8 @@
+# Base this config file on the dual-audio config file
+source "$config_folder/dual-audio"
+
+# Merge both audio tracks into one on the fly with audio filters
+audio_filter="[system][mic]amerge[aout]"
+
+# Map the output so the right stream ends up in the file
+audio_map=( aout )
