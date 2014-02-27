@@ -15,6 +15,13 @@ cap_fps="30"
 # http://ffmpeg.org/ffmpeg.html#Video-Options
 cap_size="hd1080"
 
+# Input device as described in the ffmpeg documentation
+# [hostname]:display_number.screen_number
+# You can use this to record different X servers if you play on a separate one,
+# such as the steamOS difference between normal and desktop mode
+# http://ffmpeg.org/ffmpeg-devices.html#x11grab
+cap_device=":0.0"
+
 # Scale filter options as described in the FFmpeg documentation
 # This default scales the video to 720 pixels high while maintaining aspect ratio
 # http://www.ffmpeg.org/ffmpeg-filters.html#Options
