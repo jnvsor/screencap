@@ -157,8 +157,9 @@ fi
 cap_map=( -map "[cap]" )
 cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -i ${cap_device}${cap_offset} )
 
-filter=( -filter_complex "[0]null[cap];${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap]" )
+video_filter=( -filter_complex "[0]null[cap];${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap]" )
 
+audio_filter=( -filter_complex "${audio_filter}" )
 
 if [ -n "$blind" ]; then
   unset cap_map
@@ -167,12 +168,13 @@ if [ -n "$blind" ]; then
   unset video_map
   unset video_in
   unset video_out
-  unset filter
+  unset video_filter
   audio_offset=0
 fi
 
 if [ -n "$mute" ]; then
   audio_count=0
+  unset audio_filter
   unset audio_in
   unset audio_out
 fi
@@ -191,8 +193,9 @@ set -x
 $executable \
 "${cap_in[@]}" \
 "${video_in[@]}" \
+"${video_filter[@]}" \
 "${audio_in[@]}" \
-"${filter[@]}" \
+"${audio_filter[@]}" \
 "${maps[@]}" \
 "${video_out[@]}" \
 "${cap_out[@]}" \
