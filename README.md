@@ -15,7 +15,7 @@
 #### Setup
 1. Place the script somewhere in `$PATH` (I use `~/bin`)
 2. Place the `screencap-rc` folder wherever you want it (I use `~/.sc-rc`)
-3. Open the script, scroll down to line 17 and set `config_folder` to the location of your `screencap-rc` folder (In my case that would be `config_folder="$HOME/.sr-rc"`. Don't leave a trailing slash.
+3. Open the script, scroll down to line 58 and set `config_folder` to the location of your `screencap-rc` folder (In my case that would be `config_folder="$HOME/.sr-rc"`. Don't leave a trailing slash.
 4. Run the script with: `screencap [preset] [options] filename`
 5. Press `q` to stop recording.
 6. Create your own config files. The files in `screencap-rc` are heavily commented to show a few use cases.

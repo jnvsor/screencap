@@ -14,20 +14,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-config_folder="$HOME/.sc-rc"
-
-rounding_filter="scale=w=trunc(in_w/2)*2:h=trunc(in_h/2)*2"
-
-if [ -f "$config_folder/$1" ]; then
-  source "$config_folder/$1"
-  shift
-elif [ "${1:0:1}" = "/" -a -f "$1" ]; then
-  source "$1"
-  shift
-else
-  source "$config_folder/default"
-fi
-
 
 usage(){
 cat << EOF
@@ -69,6 +55,19 @@ OPTIONS:
 EOF
 }
 
+config_folder="$HOME/.sc-rc"
+
+rounding_filter="scale=w=trunc(in_w/2)*2:h=trunc(in_h/2)*2"
+
+if [ -f "$config_folder/$1" ]; then
+  source "$config_folder/$1"
+  shift
+elif [ "${1:0:1}" = "/" -a -f "$1" ]; then
+  source "$1"
+  shift
+else
+  source "$config_folder/default"
+fi
 
 # Check for user input
 while :
