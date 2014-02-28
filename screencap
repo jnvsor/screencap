@@ -144,10 +144,6 @@ if [ -n "$u_cap_size" ]; then
   cap_size=$u_cap_size
 fi
 
-# Capture settings
-cap_name=( "cap" )
-cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -i ${cap_device}${cap_offset} )
-
 # Video filter construction
 if [ -n "$cap_scale" ]; then
   cap_scale="[cap]scale=${cap_scale}[cap];"
@@ -162,7 +158,15 @@ if [ -n "$video_filter" ]; then
   video_filter="${video_filter%%;};"
 fi
 
-video_filter="${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap];"
+# Capture settings
+cap_name=( "cap" )
+if [ -z "$cap_in" ]; then
+  cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -i ${cap_device}${cap_offset} )
+  video_filter="${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap];"
+elif [ "$cap_in" == "null" ]; then
+  unset cap_name
+  unset cap_in
+fi
 
 # Runtime blind/mute
 if [ -n "$blind" ]; then

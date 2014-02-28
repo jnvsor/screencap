@@ -10,7 +10,7 @@ video_filter+="[webcam]scale=w=-1:h=200[mid];[cap][mid]overlay=x=main_w-overlay_
 # (something you might use for streaming to twitch for example) we don't want
 # the original webcam stream to show up in the output file, so we turn off the
 # mapping completely with the special value "null"
-video_map="null"
+video_map=( null )
 
 # Since we're not rendering the stream there's no point to having the video
 # codecs clogging up our command line either
