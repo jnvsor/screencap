@@ -213,11 +213,11 @@ done
 name_filter=""
 count=0
 for i in "${cap_name[@]}" "${video_name[@]}"; do
-  name_filter="${name_filter}[$count]null[$i];"
+  name_filter="${name_filter}[$count:0]null[$i];"
   let count++
 done
 for i in "${audio_name[@]}"; do
-  name_filter="${name_filter}[$count]anull[$i];"
+  name_filter="${name_filter}[$count:0]anull[$i];"
   let count++
 done
 
