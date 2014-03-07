@@ -1,0 +1,30 @@
+# This is an experimental config file that should work on windows. Needless to
+# say there are no guarantees that any program will run properly on an OS like
+# that, and this has a few more dependancies.
+#
+# * FFmpeg - Download from zeranoe: http://ffmpeg.zeranoe.com/builds/
+# * screen-capture-recorder dshow device:
+#   https://github.com/rdp/screen-capture-recorder-to-video-windows-free
+#   What a horrible repo name...
+# * Bash - all bashes should work - Since I'm hosted on github I'll assume you
+#   have git for windows installed and you use git bash (I don't know how cgywin
+#   maps it's drives, and quite frankly I don't want to use windows and find out)
+
+# Assuming the binary is at C:\ffmpeg\bin\ffmpeg.exe
+executable="/c/ffmpeg/bin/ffmpeg.exe"
+threads=2
+
+# Using the dshow capture device we have a hardcoded cap_in, so no variables for
+# size, framerate etc. Still, it works.
+cap_in=( -f dshow -framerate 30 -i video="screen-capture-recorder" -s hd1080 )
+cap_out=( -c:v:cap "libx264" -pix_fmt yuv444p -preset "ultrafast" -qp 0 )
+
+# We have to manually reapply any scales we wanted, $cap_scale won't work
+video_filter="[cap]scale=w=-1:h=720[cap];"
+
+# Turn off aero (Windows 7) to improve performance
+net stop uxsms
+
+# Another dshow input for audio
+audio_in=( -f dshow -i audio="virtual-audio-capturer" )
+audio_name=( audio )
