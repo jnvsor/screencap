@@ -1,6 +1,6 @@
 # Screencap
 * It can record and encode 1080p 30fps video realtime with a single CPU core and supports as many threads as you want (default 2)
-* It records audio from pulseaudio and allows you to save different audio sources to different audio tracks. This lets you edit microphone commentary separately from system audio.
+* It records audio and allows you to save different audio sources to different audio tracks. This lets you edit microphone commentary separately from system audio.
 * With multiple config files you can have drastically different recording settings for different purposes.
 * Complex filters allow anything from rescaling to overlaying webcam in realtime.
 * Pass `--` as an option and the following options will be sent to the end of the FFmpeg command, for instance in order to stream to twitch.
@@ -8,9 +8,12 @@
 ### Installation
 #### Prerequisites
 * FFmpeg  
-  **Note:** FFmpeg must be compiled with certain options (Support for x11grab, libmp3lame, libx264, filters, pthreads, pulseaudio, potentially more depending on your config) so if yours doesn't work, [try compiling one yourself](#compiling-ffmpeg).
-* Pulseaudio sound server
-* A compositing window manager wouldn't hurt
+  **Note:** FFmpeg must be compiled with certain options depending on what you want to use.  
+  Support for x11grab, libmp3lame, libx264, filters, pthreads, pulseaudio. Give or take a few depending on your config  
+  So if yours doesn't work, [try compiling one yourself](#compiling-ffmpeg).
+* Bash
+* By default it uses the Pulseaudio sound server but there's nothing stopping you from using something else.
+* Compositing window managers tend to remove tearing.
 
 #### Setup
 1. Place the script somewhere in `$PATH` (I use `~/bin`)
