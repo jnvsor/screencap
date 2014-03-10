@@ -69,15 +69,6 @@ Pulseaudio has a weird tendency to mix up 48khz and 44.1khz, in such a way that 
 Avconv's x11grab device is broken and doesn't support the `-framerate` option - this means that any dropped frames will result in the output being shifted by a small amount of time and eventually desync from the sound. This is why this script no longer supports avconv.
 
 
-#### Getting FFmpeg
-If you are on ubuntu or an ubuntu derivative, you can use a PPA to install FFmpeg.
-
-    apt-add-repository ppa:jon-severinsson/ffmpeg
-    apt-get update
-    apt-get install ffmpeg
-
-I am not affiliated with or responsible for any FFmpeg PPAs.
-
 #### <a name="compiling-ffmpeg"></a>Compiling FFmpeg
 Compiling a custom FFmpeg if your package manager doesn't have a good one is not the hardest thing in the world. That said I'm not going to offer a massive instruction manual here, but instead the basic steps I use to get the git repo, configure it, and build it on my system (debian sid).
 
