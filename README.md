@@ -9,7 +9,7 @@
 #### Prerequisites
 * FFmpeg  
   **Note:** FFmpeg must be compiled with certain options depending on what you want to use.  
-  Support for x11grab, libmp3lame, libx264, filters, pthreads, pulseaudio. Give or take a few depending on your config  
+  Support for x11grab, libx264, filters, pthreads, pulseaudio. Give or take a few depending on your config  
   So if yours doesn't work, [try compiling one yourself](#compiling-ffmpeg).
 * Bash
 * By default it uses the Pulseaudio sound server but there's nothing stopping you from using something else.

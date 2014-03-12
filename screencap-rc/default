@@ -43,6 +43,9 @@ audio_in=(
 audio_name=( audio )
 
 # Audio encoder (And options) to use
-# Here I set all audio streams to encode mp3
-# http://ffmpeg.org/ffmpeg-codecs.html#libmp3lame-1
-audio_out=( -c:a "libmp3lame" )
+# Here I set all audio streams to encode flac (Which is lossless)
+audio_out=( -c:a flac )
+
+# More on devices       (Input) : http://ffmpeg.org/ffmpeg-devices.html
+# More on filters               : http://ffmpeg.org/ffmpeg-filters.html
+# More on codecs        (Output): http://ffmpeg.org/ffmpeg-codecs.html
