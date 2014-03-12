@@ -28,3 +28,4 @@ net stop uxsms
 # Another dshow input for audio
 audio_in=( -f dshow -i audio="virtual-audio-capturer" )
 audio_name=( audio )
+audio_out=( -c:a flac )
