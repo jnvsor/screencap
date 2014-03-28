@@ -76,7 +76,7 @@ Compiling a custom FFmpeg if your package manager doesn't have a good one is not
     apt-get install git build-essential yasm libcdio-paranoia-dev libx264-dev libvpx-dev libvorbis-dev libtheora-dev libspeex-dev libschroedinger-dev librtmp-dev libpulse-dev libopus-dev libopenjpeg-dev libopencv-dev libmp3lame-dev libgsm1-dev libgnutls-dev libfrei0r-ocaml-dev
     git clone https://github.com/FFmpeg/FFmpeg.git
     cd FFmpeg
-    ./configure --arch=amd64 --enable-pthreads --enable-libopencv --enable-librtmp --enable-libopenjpeg --enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-vaapi --enable-runtime-cpudetect --enable-libvorbis --enable-zlib --enable-swscale --enable-libcdio --enable-bzlib --enable-libdc1394 --enable-frei0r --enable-gnutls --enable-libgsm --enable-libmp3lame --enable-libpulse --enable-vdpau --enable-libvpx --enable-gpl --enable-x11grab --enable-libx264 --enable-filters
+    ./configure --arch=amd64 --enable-pthreads --enable-libopencv --enable-librtmp --enable-libopenjpeg --enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-vaapi --enable-runtime-cpudetect --enable-libvorbis --enable-zlib --enable-swscale --enable-libcdio --enable-bzlib --enable-libdc1394 --enable-frei0r --enable-gnutls --enable-libgsm --enable-libmp3lame --enable-libpulse --enable-vdpau --enable-libvpx --enable-gpl --enable-x11grab --enable-libx264 --enable-filters --enable-libzmq
     make -j4
 
 The binary can now be found at `FFmpeg/ffmpeg`
