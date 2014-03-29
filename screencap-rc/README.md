@@ -3,6 +3,7 @@
 Lots of the config options just paste into a part of an FFmpeg command. I recommend reading more about certain options in the FFmpeg documentation.
 
 * `executable` - The binary to run, can be absolute path to compiled FFmpeg
+* `debug` - Print the ffmpeg command before running
 * `threads` - Number of threads to use by default
 * `cap_fps` - Capture framerate
 * `cap_size` - Capture input size

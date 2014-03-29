@@ -225,8 +225,11 @@ done
 filter="${name_filter}${video_filter}${audio_filter}"
 filter=( -filter_complex "${filter%;}" )
 
+if [ $debug ]; then
+  set -x
+fi
+
 # Build final command
-set -x
 $executable \
 "${cap_in[@]}" \
 "${video_in[@]}" \
