@@ -29,3 +29,6 @@ net stop uxsms
 audio_in=( -f dshow -i audio="virtual-audio-capturer" )
 audio_name=( audio )
 audio_out=( -c:a flac )
+
+# Turn on aero afterwards
+postexec=( net start uxsms )

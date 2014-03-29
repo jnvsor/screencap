@@ -241,3 +241,5 @@ $executable \
 "${audio_out[@]}" \
 -threads $threads \
 -y "$@"
+
+"${postexec[@]}"
