@@ -78,34 +78,44 @@ do
       exit 0
       ;;
 
-    --fps|-r)
-      cap_fps="$2"
-      shift 2
-      ;;
-
-    --input|-i)
-      if [ "$2" == "window" ]; then
-        wininfo="$(xwininfo)"
-        u_cap_size="$(echo "$wininfo" |
-            awk '/Width:/{w=$2} /Height:/{h=$2} END{printf("%dx%d", w, h)}')"
-        cap_offset="$(echo "$wininfo" | awk '
-            /Absolute upper-left X:/{x=$4}
-            /Absolute upper-left Y:/{y=$4}
-            END{printf("+%d,%d", x, y)}')"
-      else
-        u_cap_size="$2"
+    --fps|-r|--input|-i|--output|-o|--threads|-t)
+      if [ "$#" -lt "2" ]; then
+        >&2 echo "Too few arguments presented"
+        exit 1
       fi
-      shift 2
-      ;;
-
-    --output|-o)
-      case "$2" in
-        default|scale|noscale|in) # any of these keywords will disable scaling
-          unset cap_scale
+      case "$1" in
+        --fps|-r)
+          cap_fps="$2"
           ;;
 
-        *)
-          u_scale="$2"
+        --input|-i)
+          if [ "$2" == "window" ]; then
+            wininfo="$(xwininfo)"
+            u_cap_size="$(echo "$wininfo" |
+                awk '/Width:/{w=$2} /Height:/{h=$2} END{printf("%dx%d", w, h)}')"
+            cap_offset="$(echo "$wininfo" | awk '
+                /Absolute upper-left X:/{x=$4}
+                /Absolute upper-left Y:/{y=$4}
+                END{printf("+%d,%d", x, y)}')"
+          else
+            u_cap_size="$2"
+          fi
+          ;;
+
+        --output|-o)
+          case "$2" in
+            default|scale|noscale|in) # any of these keywords will disable scaling
+              unset cap_scale
+              ;;
+
+            *)
+              u_scale="$2"
+              ;;
+          esac
+          ;;
+
+        --threads|-t)
+          threads="$2"
           ;;
       esac
       shift 2
@@ -119,11 +129,6 @@ do
     --mute)
       mute=true
       shift
-      ;;
-
-    --threads|-t)
-      threads="$2"
-      shift 2
       ;;
 
     --)
