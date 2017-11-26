@@ -166,7 +166,7 @@ fi
 # Capture settings
 cap_name=( "cap" )
 if [ -z "$cap_in" ]; then
-  cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -i ${cap_device}${cap_offset} )
+  cap_in=( -f x11grab -framerate $cap_fps -s $cap_size -probesize 100M -i ${cap_device}${cap_offset} )
   video_filter="${cap_scale}${video_filter}${u_scale}[cap]${rounding_filter}[cap];"
 elif [ "$cap_in" == "null" ]; then
   unset cap_name

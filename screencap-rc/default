@@ -36,7 +36,7 @@ cap_out=( -c:v:cap "libx264" -pix_fmt yuv444p -preset "ultrafast" -qp 0 )
 # Default is the default pulseaudio input device
 # http://www.ffmpeg.org/ffmpeg-devices.html#pulse-1
 audio_in=(
-  -f pulse -name "screencap -> system audio" -channel_layout "stereo" -i "default"
+  -thread_queue_size 512 -f pulse -name "screencap -> system audio" -channel_layout "stereo" -i "default"
 )
 
 # Give the audio input a name
